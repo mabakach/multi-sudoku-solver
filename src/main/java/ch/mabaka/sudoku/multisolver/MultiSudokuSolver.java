@@ -172,12 +172,16 @@ public class MultiSudokuSolver {
 		for (Sudoku sudoku : sudokus) {
 			System.out.println(sudoku.toString());
 		}
-		Map<String, Integer> variables = new HashMap<String, Integer>();
+		Map<String, Object> variables = new HashMap<String, Object>();
 		for (Sudoku sudoku : sudokus) {
 			for (SudokuRow row : sudoku.getRows()) {
 				for (SudokuField field : row.getFields()) {
-					if (field.getVariable() != null && field.getValue() != null) {
-						variables.put(field.getVariable().toString(), field.getValue());
+					if (field.getVariable() != null) {
+						if (field.getValue() != null){
+							variables.put(field.getVariable().toString(), field.getValue());
+						} else {
+							variables.put(field.getVariable().toString(), field.getPossibleValues().toString());
+						}
 					}
 				}
 			}
