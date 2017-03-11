@@ -10,7 +10,7 @@ public class Sudoku {
 	List<SudokuColumn> columns;
 
 	List<SudokuSmallSquare> smallSquares;
-	
+
 	boolean isSolved = false;
 
 	public Sudoku() {
@@ -100,18 +100,18 @@ public class Sudoku {
 	public List<SudokuSmallSquare> getSmallSquares() {
 		return smallSquares;
 	}
-	
+
 	public boolean isSolved() {
 		if (!isSolved) {
 			boolean allFieldsSolved = true;
 			for (SudokuRow row : rows) {
 				for (SudokuField field : row.getFields()) {
-					if (field.getValue() == null){
+					if (field.getValue() == null) {
 						allFieldsSolved = false;
 						break;
 					}
 				}
-				if (!allFieldsSolved){
+				if (!allFieldsSolved) {
 					break;
 				}
 			}
@@ -119,14 +119,16 @@ public class Sudoku {
 		}
 		return isSolved;
 	}
-	
+
 	@Override
-	public String toString(){
+	public String toString() {
 		StringBuffer sb = new StringBuffer();
-		for (SudokuRow row : rows){
-			for (SudokuField field : row.getFields()){
+		for (SudokuRow row : rows) {
+			for (SudokuField field : row.getFields()) {
 				if (field.getValue() != null) {
 					sb.append(field.getValue());
+				} else if (field.getVariable() != null) {
+					sb.append(field.getVariable());
 				} else {
 					sb.append("?");
 				}
@@ -135,6 +137,6 @@ public class Sudoku {
 			sb.append("\n");
 		}
 		return sb.toString();
-		
+
 	}
 }

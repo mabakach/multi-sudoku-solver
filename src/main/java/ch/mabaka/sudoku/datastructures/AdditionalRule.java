@@ -59,7 +59,7 @@ public class AdditionalRule {
 					filteredValues.add(possibleValue);
 				}
 			} else if ("=".equals(comparisonSign)){
-				if (possibleValue == value){
+				if (possibleValue != value){
 					filteredValues.add(possibleValue);
 				}
 			} if (">".equals(comparisonSign)){
