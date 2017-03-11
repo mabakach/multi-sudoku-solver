@@ -14,6 +14,8 @@ public class SudokuField {
 
 	Integer value;
 
+	Integer assumedValue;
+
 	List<Integer> possibleValues;
 
 	SudokuRow sudokuRow;
@@ -23,7 +25,7 @@ public class SudokuField {
 	SudokuSmallSquare sudokuSmallSquare;
 
 	List<SudokuField> connectedFields;
-	
+
 	List<AdditionalRule> additionalRules;
 
 	private SudokuField() {
@@ -41,7 +43,7 @@ public class SudokuField {
 
 	public SudokuField(Integer value) {
 		this();
-		if (value != 0){
+		if (value != 0) {
 			this.value = value;
 		}
 	}
@@ -56,8 +58,12 @@ public class SudokuField {
 		return value;
 	}
 
-	public void setValue(Integer value) {
-		this.value = value;
+	public Integer getAssumedValue() {
+		return assumedValue;
+	}
+
+	public void setAssumedValue(Integer assumedValue) {
+		this.assumedValue = assumedValue;
 	}
 
 	public List<Integer> getPossibleValues() {
@@ -104,8 +110,40 @@ public class SudokuField {
 		additionalRules.addAll(rules);
 	}
 
+	public boolean isThisFieldAndAllConnectedFieldsValid(){
+		boolean isValid = isValid();
+		for (SudokuField connectedField : connectedFields){
+			isValid = isValid && connectedField.isValid();
+		}
+		return isValid;
+	}
 	
-	public boolean tryToSolve() {
+	/**
+	 * Assume next value for this and all connected fields.
+	 * @return true if there was another possible value to choose.
+	 */
+	public boolean assumeNextValue() {
+		boolean assumeOk = true;
+		if (possibleValues.size() > 0) {
+			if (assumedValue == null) {
+				assumedValue = possibleValues.get(0);
+			} else {
+				int currentIndex = possibleValues.indexOf(assumedValue);
+				if (currentIndex < possibleValues.size() - 1) {
+					assumedValue = possibleValues.get(currentIndex + 1);
+				} else {
+					assumedValue = null;
+					assumeOk = false;
+				}
+			}
+		}
+		for (SudokuField connectedField : connectedFields){
+			connectedField.setAssumedValue(assumedValue);
+		}
+		return assumeOk;
+	}
+
+	public boolean reducePossibleValues() {
 		boolean didAnyChanges = false;
 		if (value != null) {
 			return didAnyChanges;
@@ -116,11 +154,11 @@ public class SudokuField {
 			didAnyChanges = true;
 		}
 		for (SudokuField connectedField : connectedFields) {
-			if (connectedField.getValue() != null){
+			if (connectedField.getValue() != null) {
 				this.value = connectedField.getValue();
 				this.possibleValues.clear();
 				didAnyChanges = true;
-			} else if(!connectedField.getPossibleValues().isEmpty()) {
+			} else if (!connectedField.getPossibleValues().isEmpty()) {
 				List<Integer> valuesToRemove = new ArrayList<Integer>();
 				for (Integer possibleValue : possibleValues) {
 					if (!connectedField.possibleValues.contains(possibleValue)) {
@@ -131,7 +169,7 @@ public class SudokuField {
 				possibleValues.removeAll(valuesToRemove);
 			}
 		}
-		for (AdditionalRule rule : additionalRules){
+		for (AdditionalRule rule : additionalRules) {
 			rule.filterByRule(possibleValues);
 		}
 		if (!checkIfValueFound()) {
@@ -176,5 +214,9 @@ public class SudokuField {
 			return true;
 		}
 		return false;
+	}
+	
+	private boolean isValid() {
+		return sudokuRow.isValid() && sudokuColumn.isValid() && sudokuSmallSquare.isValid();
 	}
 }

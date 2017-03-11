@@ -147,13 +147,14 @@ public class MultiSudokuSolver {
 				}
 			}
 		}
-
+		
+		// reduce possibilities
 		while (!allSudokusSolved && didUpdateFiledsInIteration) {
 			didUpdateFiledsInIteration = false;
 			for (Sudoku sudoku : sudokus) {
 				for (SudokuRow row : sudoku.getRows()) {
 					for (SudokuField field : row.getFields()) {
-						if (field.tryToSolve()) {
+						if (field.reducePossibleValues()) {
 							didUpdateFiledsInIteration = true;
 						}
 					}
@@ -166,6 +167,11 @@ public class MultiSudokuSolver {
 				}
 			}
 		}
+		
+		if (!allSudokusSolved){
+			// try with backtracking
+		}
+		
 		if (!allSudokusSolved) {
 			System.out.println("No unique solution found!");
 		}

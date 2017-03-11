@@ -24,7 +24,7 @@ public abstract class SudokuFieldGroup {
 		boolean isValid = true;
 		List<Integer> values = new ArrayList<Integer>();
 		for (SudokuField field : fields){
-			Integer fieldValue = field.getValue();
+			Integer fieldValue = field.getValue() != null ? field.getValue() : field.getAssumedValue();
 			if (fieldValue != null) {
 				if (values.contains(field.getValue())) {
 					isValid = false;

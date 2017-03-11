@@ -119,6 +119,44 @@ public class Sudoku {
 		}
 		return isSolved;
 	}
+	
+	public boolean isAssumedSolved() {
+		if (!isSolved) {
+			boolean allFieldsSolved = true;
+			for (SudokuRow row : rows) {
+				for (SudokuField field : row.getFields()) {
+					if (field.getValue() == null && field.getAssumedValue() == null) {
+						allFieldsSolved = false;
+						break;
+					}
+				}
+				if (!allFieldsSolved) {
+					break;
+				}
+			}
+			isSolved = allFieldsSolved;
+		}
+		return isSolved;
+	}
+	
+	public boolean isValid(){
+		for(SudokuRow row : rows){
+			if (!row.isValid()){
+				return false;
+			}
+		}
+		for(SudokuColumn column : columns){
+			if (!column.isValid()){
+				return false;
+			}
+		}
+		for(SudokuSmallSquare smallSquare : smallSquares){
+			if (!smallSquare.isValid()){
+				return false;
+			}
+		}
+		return true;
+	}
 
 	@Override
 	public String toString() {
